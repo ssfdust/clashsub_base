@@ -1,8 +1,8 @@
 def createpod [] {
     if (podman pod exists clashsub | complete).exit_code == 1 {
         echo "Create clashsub pod"
-        podman pod create -p 18080:80 -p 25500:25500 clashsub
-        # systemctl --user start podman.service
+        # podman pod create -p 18080:80 -p 25500:25500 clashsub
+        podman pod create -p 25500:25500 clashsub
     } else {
         echo "clashsub pod exists."
     }
@@ -32,9 +32,6 @@ def customconv [orig: string, new: string, tag: string] {
 }
 
 pullimage docker.io/tindy2013/subconverter
-# pullimage docker.io/careywong/subweb
-# pullimage docker.io/lucaslorentz/caddy-docker-proxy
 createpod
 customconv docker.io/tindy2013/subconverter docker.io/ssfdust/subconverter ssfdust
-# podman run --name caddy -d -e CADDY_DOCKER_NO_SCOPE=true --pod clashsub -v $"($env.XDG_RUNTIME_DIR)/podman/podman.sock:/var/run/docker.sock" lucaslorentz/caddy-docker-proxy
 podman run --name subconverter --pod clashsub -d docker.io/ssfdust/subconverter:ssfdust
